@@ -1,0 +1,36 @@
+How does rabbitmq magically become a Host?
+
+To understand this, we have to look at what happens the exact second you run docker compose up.
+In networking, a "host" is simply any computer or device that has an IP address attached to a network.
+When you run Compose, Docker does three things automatically in the background:
+
+Step 1: It builds a Private Router (The Bridge Network)
+Docker creates a brand new, isolated virtual Wi-Fi network specifically for your application.
+It usually names it something like rabbitmq-trials_default.
+Both your rmq-server container and your rmq-app container are plugged into this router.
+
+Step 2: It hands out Internal IP Addresses
+Docker assigns a private IP address to every container on that network.
+    rmq-server might get 172.18.0.2
+    rmq-app might get 172.18.0.3
+
+Step 3: The Embedded DNS Server (The Magic)
+This is the secret sauce.
+Inside every single Docker container, Docker injects a hidden DNS (Domain Name System) server at the IP address 127.0.0.11.
+
+A DNS server is just a phonebook.
+When you type google.com into your browser, a real-world DNS server looks up the name and hands your browser Google's actual IP address (142.250.190.46).
+
+Docker does the exact same thing, but for your containers.
+It takes the names of the services you wrote in your YAML file (rabbitmq and rabbitmq-app) and registers them as valid domain names inside its internal phonebook.
+
+The Full Flow:
+
+    Your Spring Boot app starts up and reads SPRING_RABBITMQ_HOST=rabbitmq.
+    Spring Boot says: "I need to connect to a host named 'rabbitmq'. What is its IP?"
+    The request hits Docker's hidden internal DNS server (127.0.0.11).
+    Docker looks at its Compose phonebook, sees the rabbitmq service, and says, "Ah, that service is located at 172.18.0.2!"
+    Docker routes the traffic from your Java app directly to the RabbitMQ container.
+
+Because of this built-in DNS phonebook, you never have to hardcode fragile IP addresses.
+As long as you use the exact service name defined in your docker-compose.yml, Docker will always know exactly how to route the traffic!
