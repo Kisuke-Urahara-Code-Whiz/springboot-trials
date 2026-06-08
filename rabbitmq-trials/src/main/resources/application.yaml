@@ -8,6 +8,12 @@ spring:
     password: dev
 server:
   port: 5000
+management:
+  endpoints:
+    web:
+      base-path: /rmq-trials
+      exposure:
+        include: "*"
 rabbitmq:
   queueName: firstQueue
   exchangeName: firstExchange
