@@ -6,3 +6,4 @@ Some extra things added are ->
 4) Learnt how to work with Springboot Actuator
 5) Learnt how to add dependencies
 6) Learnt how to use environment variables using pom.xml and then use it in code
+7) Learnt how to setup env for application.yml through docker-compose.yml

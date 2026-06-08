@@ -4,17 +4,22 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: dev
-    password: dev
+    username: RABBITMQ_USERNAME
+    password: RABBITMQ_PASSWORD
 server:
   port: 5000
 management:
   endpoints:
     web:
-      base-path: /rmq-trials
+      base-path: /CUSTOM_ACTUATOR_ENDPOINT
       exposure:
         include: "*"
 rabbitmq:
-  queueName: firstQueue
-  exchangeName: firstExchange
-  routingKeyName: firstRoutingKey
+  queue:
+    normal: RABBITMQ_NORMAL_QUEUE_NAME
+    json: RABBITMQ_JSON_QUEUE_NAME
+  exchange:
+    name: RABBITMQ_EXCHANGE_KEY
+  routing:
+    normal: RABBITMQ_NORMAL_QUEUE_ROUTINGKEY
+    json: RABBITMQ_JSON_QUEUE_ROUTINGKEY

@@ -6,15 +6,20 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import sprinboot.trials.rabbitmq_trials.dtos.User;
+
 //Spring Boot automatically configure RabbitTemplate for us. We just need to inject and use it.
 @Service
 public class RabbitMQProducer {
 
-    @Value("${rabbitmq.exchangeName}")
+    @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${rabbitmq.routingKeyName}")
+    @Value("${rabbitmq.routing.normal}")
     private String routingKeyName;
+
+    @Value("${rabbitmq.routing.json}")
+    private String jsonRoutingKey;
 
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQProducer.class);
 
@@ -28,6 +33,13 @@ public class RabbitMQProducer {
         logger.info("Message sent -> {}", message);
         rabbitTemplate.convertAndSend(exchangeName, routingKeyName, message);
     }
+
+    public void sendJsonMessage(User user){
+        logger.info("Message sent -> {}", user.toString());
+        rabbitTemplate.convertAndSend(exchangeName, jsonRoutingKey, user);
+    }
+
+
 
 
 }
