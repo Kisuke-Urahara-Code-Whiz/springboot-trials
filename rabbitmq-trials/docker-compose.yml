@@ -1,0 +1,38 @@
+version: '3.8' #docker-compose version not app version
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rmq-server
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: RABBITMQ_USERNAME
+      RABBITMQ_DEFAULT_PASS: RABBITMQ_PASSWORD
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq-app:
+    build: .
+    image: rabbitmq-app:latest #built-image name
+    container_name: rmq-app
+    ports:
+      - "5000:5000"
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbitmq" #name of the service whose network we need to connect to
+      SPRING_RABBITMQ_PORT: "5672"
+      SPRING_RABBITMQ_USERNAME: RABBITMQ_USERNAME
+      SPRING_RABBITMQ_PASSWORD: RABBITMQ_PASSWORD
+
+      RABBITMQ_QUEUE_NORMAL: RABBITMQ_NORMAL_QUEUE_NAME
+      RABBITMQ_QUEUE_JSON: RABBITMQ_JSON_QUEUE_NAME
+      RABBITMQ_EXCHANGE_NAME: RABBITMQ_EXCHANGE_KEY
+      RABBITMQ_ROUTING_NORMAL: RABBITMQ_NORMAL_QUEUE_ROUTINGKEY
+      RABBITMQ_ROUTING_JSON: RABBITMQ_JSON_QUEUE_ROUTINGKEY
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
