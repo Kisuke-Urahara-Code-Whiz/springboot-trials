@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: rabbitmq-trials
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: dev
+    password: dev
+server:
+  port: 5000
+management:
+  endpoints:
+    web:
+      base-path: /rmq-trials
+      exposure:
+        include: "*"
+rabbitmq:
+  queueName: firstQueue
+  exchangeName: firstExchange
+  routingKeyName: firstRoutingKey
+  jsonQueueName : jsonQueue
+  jsonRoutingKeyName : jsonRoutingKey
