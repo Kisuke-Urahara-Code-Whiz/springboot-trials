@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: mongodb-trials
+
+  mongodb:
+    username: dev
+    password: dev
+    database: trials
+    authentication-database: admin
+    host: localhost
+    port: 27018
+server:
+  port: 8000
